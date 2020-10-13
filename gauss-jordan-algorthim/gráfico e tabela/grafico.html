@@ -1,0 +1,165 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Bar Chart</title>
+    <script src="./Chartt.min.js"></script>
+    <script src="./utils.js"></script>
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container" style="width: 75%;">
+        <canvas id="canvas"></canvas>
+    </div>
+    <script>
+        var arquivos = ["ex01.m-ext.m",
+            "ex02.m-ext.m",
+            "ex03.m-ext.m",
+            "ex04.m-ext.m",
+            "ex05.m-ext.m",
+            "ex06.m-ext.m",
+            "ex07.m-ext.m",
+            "ex08.m-ext.m",
+            "ex09.m-ext.m"];
+        var color = Chart.helpers.color;
+        var barChartData = {
+            labels: ["ex01.m-ext.m",
+                "ex02.m-ext.m",
+                "ex03.m-ext.m",
+                "ex04.m-ext.m",
+                "ex05.m-ext.m",
+                "ex06.m-ext.m",
+                "ex07.m-ext.m",
+                "ex08.m-ext.m",
+                "ex09.m-ext.m",
+                "ex010.m-ext.m",
+                "ex011.m-ext.m",
+                "ex012.m-ext.m",
+                "ex013.m-ext.m",
+                "ex014.m-ext.m",
+                "ex015.m-ext.m",
+                "ex016.m-ext.m",
+                "ex017.m-ext.m",
+                "ex018.m-ext.m",
+                "ex019.m-ext.m",
+                "ex020.m-ext.m"],
+            datasets: [{
+                label: '',
+                backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.red,
+                borderWidth: 1,
+                data: [
+                    1.0500000025785994,
+                    2.909999999246793,
+                    5.954999996902188,
+                    2.794999998732237,
+                    20.264999999199063,
+                    24.11000000211061,
+                    41.195000001607696,
+                    52.550000000337604,
+                    75.02999999996973,
+                    106.66499999933876,
+                    147.59000000049127,
+                    207.76499999919906,
+                    275.5749999996624,
+                    367.80999999973574,
+                    482.319999999163,
+                    618.5549999972864,
+                    847.1050000007381,
+                    953.7500000005821,
+                    1176.9150000000081,
+                    2748.3500000016647
+                ]
+            }]
+
+        };
+
+        window.onload = function () {
+            var ctx = document.getElementById('canvas').getContext('2d');
+            window.myBar = new Chart(ctx, {
+                type: 'bar',
+                data: barChartData,
+                options: {
+                    responsive: true,
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Tempo de execução necessário por cada arquivo (milisegundos)'
+                    }
+                }
+            });
+
+        };
+
+        document.getElementById('randomizeData').addEventListener('click', function () {
+            var zero = Math.random() < 0.2 ? true : false;
+            barChartData.datasets.forEach(function (dataset) {
+                dataset.data = dataset.data.map(function () {
+                    return zero ? 0.0 : randomScalingFactor();
+                });
+
+            });
+            window.myBar.update();
+        });
+
+        var colorNames = Object.keys(window.chartColors);
+        document.getElementById('addDataset').addEventListener('click', function () {
+            var colorName = colorNames[barChartData.datasets.length % colorNames.length];
+            var dsColor = window.chartColors[colorName];
+            var newDataset = {
+                label: 'Dataset ' + (barChartData.datasets.length + 1),
+                backgroundColor: color(dsColor).alpha(0.5).rgbString(),
+                borderColor: dsColor,
+                borderWidth: 1,
+                data: []
+            };
+
+            for (var index = 0; index < barChartData.labels.length; ++index) {
+                newDataset.data.push(randomScalingFactor());
+            }
+
+            barChartData.datasets.push(newDataset);
+            window.myBar.update();
+        });
+
+        document.getElementById('addData').addEventListener('click', function () {
+            if (barChartData.datasets.length > 0) {
+                var month = MONTHS[barChartData.labels.length % MONTHS.length];
+                barChartData.labels.push(month);
+
+                for (var index = 0; index < barChartData.datasets.length; ++index) {
+                    // window.myBar.addData(randomScalingFactor(), index);
+                    barChartData.datasets[index].data.push(randomScalingFactor());
+                }
+
+                window.myBar.update();
+            }
+        });
+
+        document.getElementById('removeDataset').addEventListener('click', function () {
+            barChartData.datasets.pop();
+            window.myBar.update();
+        });
+
+        document.getElementById('removeData').addEventListener('click', function () {
+            barChartData.labels.splice(-1, 1); // remove the label first
+
+            barChartData.datasets.forEach(function (dataset) {
+                dataset.data.pop();
+            });
+
+            window.myBar.update();
+        });
+    </script>
+</body>
+
+</html>

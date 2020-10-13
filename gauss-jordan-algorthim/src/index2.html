@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algebra Linear</title>
+    <link rel="stylesheet" href="Css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+<body>
+    <div class="mainContainer">
+    <!--Começo da DIV-->
+    
+        <div class="titulo">
+            Algebra Linear
+        </div>
+
+            <div class="card">
+        <!--Começo da DIV-->
+                    <div class="grafico">
+                        <canvas class="line-chart"></canvas>
+                    </div>
+                <div class="cardButton">
+                    <input type="file" name="readTXT" id="fileSelector" class="readTXT">
+                    <button onclick="gerarGrafico()" class="bntGerar">Gerar gráfico</button>
+                </div>
+        <!--Final da DIV-->
+        </div>
+    <!--Final da DIV-->    
+    </div>
+
+
+     
+    <script src="app.js"></script>
+    <script src="matriz.js"></script>
+    <!-- <script src="operMatriz.js"></script> -->
+
+    <script>
+       lerArquivo()
+       //Criando as manipulações...
+        var ctx = document.getElementsByClassName("line-chart");
+        
+        function gerarGrafico(){
+
+            console.log("Gerando gráfico....")
+        var chartGraph = new Chart(ctx,{
+            type: 'line',
+            data:{
+                labels:[1,2,3,4,5,6,7,8,9,10]
+            }
+        });
+        }
+
+       
+
+
+        function lerArquivo(){
+                const fileSelector = document.getElementById('fileSelector');
+
+                //
+                fileSelector.addEventListener("change",(event)=>{
+                    
+                    const files = event.target.files
+                    for(var f = 0; f< files.length;f++){
+                        let file = files.item(f)
+                        
+                        if(file){
+                            
+                            let reader = new FileReader(file);
+                            let firstLine = true
+                            //tentar concertar isso HJ de noite
+                            reader.onload = function (){
+                                let lines = reader.result.split("\n")
+                                let matrix
+                                
+
+                                for(let i=0;i<lines.length;i++){
+                                    if(!lines[i].startsWith("%") && lines[i] != ""){
+                                        if(firstLine){
+                                            matrix = new Matrix(parseInt(aux[0]),parseInt(aux[1]));
+                                            firstLine= false
+                                            console.log("Primeira leitura: "+parseInt(aux[0])+"Segunda leitura: "+parseInt(aux[1]))
+                                        }else{
+                                            matrix.set(parseInt(aux[0]),parseInt(aux[1]),parseInt(aux[2]))
+                                            console.log("Primeira leitura: "+parseInt(aux[0])+"Segunda leitura: "+parseInt(aux[1])+"Terceira leitura: "+parseInt(aux[2]))
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                });
+        }
+
+    </script>
+   
+</body>
+</html>
